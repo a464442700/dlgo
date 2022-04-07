@@ -1,9 +1,29 @@
+import copy #浅复制
+from gotypes import  Player #从模块gotypes中导入类Player
 
+class Move():
+    def __init__(self,point=None,is_pass=False,is_resign=False):#Move表示棋手的动作，落子，过，认输
+        assert (point is not None)^ is_pass^is_resign#assert 断言 assert False会报错
+        #^按位异或
+        self.point =point
+        self.is_play=(self.point is not None)
+        self.is_pass=is_pass
+        self.is_resign=is_resign
+
+    @classmethod#此注解可以不用实例化就能访问该方法
+    def play(cls,point):#cls表示类本身，self表示实例变量
+        return Move(point=point)
+    @classmethod
+    def pass_turn(cls):
+        return Move(is_pass=True)
+    @classmethod
+    def resign(cls):
+        return Move(is_resign=True)
 
 class GoString():
     def __init__(self, color, stones, liberties):
         self.color = color#当前棋链的颜色
-        self.stones = set(stones)#棋链的棋子坐标集合
+        self.stones = set(stones)#棋链的棋子坐标集合 set表示集合，有add remove等方法
         self.liberties = set(liberties)#气也是坐标，棋链的气的坐标集合
 
     def remove_liberty(self, point):
@@ -25,7 +45,4 @@ class GoString():
         return len(self.liberties)
 
     def __eq__(self, other):
-        return isinstance(other, GoString) and \
-               self.color == other.color and \
-               self.stones == other.stones and \
-               self.liberties == other.liberties
+        return isinstance(other, GoString) and self.color == other.color and self.stones == other.stones and  self.liberties == other.liberties
