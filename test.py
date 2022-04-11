@@ -5,3 +5,4 @@ a=gotypes.Player.black
 b=agent.naive.RandomBot()
 if __name__=='main':
     pass
+    pass
