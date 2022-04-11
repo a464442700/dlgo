@@ -1,10 +1,10 @@
 # tag::randombotimports[]
 import random
-from agent.base import Agent# 从文件agent.base。py中导入类Agent（也可以是方法，变量）
+from dlgo.agent.base import Agent# 从文件agent.base。py中导入类Agent（也可以是方法，变量）
 #也可以写成 import agent.base ，区别是使用时必须 这样用 a=Agent()改成a= agent.base.Agent
-from agent.helpers import is_point_an_eye
-from goboard_slow import Move
-from gotypes import Point
+from dlgo.agent.helpers import is_point_an_eye
+from dlgo.goboard_slow import Move
+from dlgo.gotypes import Point
 # end::randombotimports[]
 
 
@@ -28,3 +28,5 @@ class RandomBot(Agent):
             return Move.pass_turn()
         return Move.play(random.choice(candidates))
 # end::random_bot[]
+if __name__ == 'main':
+    pass

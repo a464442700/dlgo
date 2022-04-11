@@ -1,5 +1,5 @@
 import copy #浅复制
-from gotypes import  Player #从模块gotypes中导入类Player
+from dlgo.gotypes import  Player #从模块gotypes中导入类Player
 
 class Move():
     def __init__(self,point=None,is_pass=False,is_resign=False):#Move表示棋手的动作，落子，过，认输
@@ -89,7 +89,7 @@ class Board():
             1<=point.col<=self.num_rows
 
     def get(self,point):
-        string=self.__grid.get(point)
+        string=self._grid.get(point)
         if string is None:
             return None
         return string.color
@@ -174,3 +174,4 @@ class GameState():
         return (
                 self.board.get(move.point) is None and not self.is_move_self_capture(self.next_player, move) and \
             not self.does_move_violate_ko(self.next_player, move))
+
