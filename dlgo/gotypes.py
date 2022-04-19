@@ -29,3 +29,8 @@ class Point(namedtuple('Point', 'row col')):#namedtuple表示一个命名元组�
     def __deepcopy__(self, memodict={}):
         # These are very immutable.
         return self
+if __name__ == "__main__":
+    point=Point(row=1,col=2)
+
+    point=point._replace(row=3)#修改属性
+    print(point.row)

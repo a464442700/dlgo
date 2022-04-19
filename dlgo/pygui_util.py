@@ -73,9 +73,8 @@ def draw_board():
     # 窗口大小为670x670
     screen = pygame.display.set_mode((long_size+2*board_size, wide_size+2*board_size))
     screen.fill(screen_color)  # 填充颜色
-    pygame.display.update()
-    while True:
-        pass
+    #pygame.display.update()
+
     for i in range(gride_size, long_size + gride_size, gride_size):
         if (i == gride_size or i == long_size):
             pygame.draw.line(screen, line_color, (gride_size, i), (long_size, i), 4)
@@ -87,6 +86,12 @@ def draw_board():
         for j in range(3, 21, 6):
             pygame.draw.circle(screen, line_color, ((i + 1) * gride_size, (j + 1) * gride_size), star_radiu, 0)
     pygame.display.update()
+    # while True:
+    #     for event in pygame.event.get():
+    #         if event.type == QUIT:
+    #             # 接收到退出事件后，退出程序
+    #             pygame.quit()
+    #             sys.exit()
 
     draw_by_mouse(screen,line_color,gride_size)
 

@@ -1,6 +1,9 @@
 import pygame
 import math
 from dlgo.gotypes import  Player
+import time
+from pygame.locals import QUIT
+import sys
 class Draw():
 
     def __init__(self,af):
@@ -18,6 +21,11 @@ class Draw():
         self.screen = pygame.display.set_mode((self.long_size + 2 * self.board_size, self.wide_size + 2 * self.board_size))
         self.screen.fill(self.screen_color)
         pygame.display.update()
+        time.sleep(10)
+        # while True:  # 不断训练刷新画布
+        #     for event in pygame.event.get():  # 获取事件，如果鼠标点击右上角关闭按钮，关闭
+        #         if event.type== QUIT:
+        #             sys.exit()
     def draw_borad(self):
         for i in range(self.gride_size, self.long_size + self.gride_size, self.gride_size):
             if (i == self.gride_size or i == self.long_size):
