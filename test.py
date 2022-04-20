@@ -36,3 +36,8 @@ point.append((3,4))
 print(point)
 for i in range(3, 21, 6):
     print(i)
+
+print((47-40*1)**2+(47-40*1)**2)
+print(16**2)
+
+
