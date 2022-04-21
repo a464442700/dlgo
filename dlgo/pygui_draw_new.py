@@ -25,6 +25,8 @@ class Draw(Process):
         self.bot_queue=bot_queue
         self.human_queue=human_queue
         self.player_queue=player_queue
+        self.pass_pot=(self.gride_size*4,self.wide_size + self.gride_size)
+        self.resign_pot=((self.gride_size*8,self.wide_size + self.gride_size))
         super().__init__()
         # while True:  # 不断训练刷新画布
         #     for event in pygame.event.get():  # 获取事件，如果鼠标点击右上角关闭按钮，关闭
@@ -60,6 +62,8 @@ class Draw(Process):
             return True
         return False
 
+
+
     def get_point(self,x, y):
         # x y 是坐标
         # 如果坐标位于以math.ceil(af/5*2) 为半径的园内，返回其坐标
@@ -82,13 +86,45 @@ class Draw(Process):
             return (row, col)
         else:
             return None
+    def show_message(self,msg,center):
+        fontObj = pygame.font.Font(None, 24)
+        textSurfaceObj = fontObj.render(msg, True, (0, 0, 0))
+        textRectObj = textSurfaceObj.get_rect()
+        x,y=center
+        textRectObj.center = (x+self.gride_size/2,y+self.gride_size/2)#(self.long_size+self.board_size*8, self.board_size*2)
+        pygame.draw.rect(self.screen, self.screen_color, (x,y,self.gride_size,self.gride_size), 0)
+        self.screen.blit(textSurfaceObj, textRectObj)
+
+    def pot_in_pass(self,x,y):
+        pass_x,pass_y=self.pass_pot
+        if x >=pass_x and x<=pass_x+self.gride_size \
+            and y>=pass_y +self.gride_size/3 and y<=pass_y+self.gride_size/3*2:
+            return True
+        else:
+            return False
+
+    def pot_in_resign(self,x,y):
+        pass_x,pass_y=self.resign_pot
+        if x >=pass_x and x<=pass_x+self.gride_size \
+            and y>=pass_y +self.gride_size/3 and y<=pass_y+self.gride_size/3*2:
+            return True
+        else:
+            return False
+
     def run(self):
         #画棋盘
         pygame.init()
         self.screen = pygame.display.set_mode(
-            (self.long_size + 2 * self.board_size, self.wide_size + 2 * self.board_size))
+            (self.long_size + self.gride_size, self.wide_size + self.gride_size*2))
         self.screen.fill(self.screen_color)
         self.draw_borad()
+        #字体
+        #self.show_message('pass')
+        self.show_message('pass',self.pass_pot)
+        self.show_message('resign',self.resign_pot)
+
+
+
         pygame.display.update()
         #test start
 
@@ -106,7 +142,11 @@ class Draw(Process):
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.human_queue.empty() and current_player == Player.black:
                         x, y = pygame.mouse.get_pos()
-
+                        #print(x,y)
+                        if self.pot_in_pass(x,y):
+                            print('pass')
+                        if self.pot_in_resign(x,y):
+                            print('resign')
                         if self.get_point(x, y) is not None:
                             row, col = self.get_point(x, y)
                             print(row, col)  # 打印注释
@@ -137,12 +177,14 @@ class Draw(Process):
 if __name__ == "__main__":
     bot_queue = Queue()
     human_queue=Queue()
-    display_go=Draw(40,10,bot_queue,human_queue)
+    player_queue=Queue()
+    display_go=Draw(40,10,bot_queue,human_queue,player_queue)
     display_go.start()
-    print(1)
-    move = Move(point=Point(row=10, col=10))
-    if not bot_queue.full():
-        bot_queue.put((Player.white, move))
+    player_queue.put(Player.black)
+    # print(1)
+    # move = Move(point=Point(row=10, col=10))
+    # if not bot_queue.full():
+    #     bot_queue.put((Player.white, move))
     # move = Move(point=Point(row=10, col=10))
     # queue.put((Player.white, move))
     # player, move = queue.get()
