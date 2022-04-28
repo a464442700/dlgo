@@ -55,8 +55,16 @@ class Board():
         self._grid={}
 
     def place_stone(self,player,point):
+
+        #add  by lxf 20220424
+
+
+
+
+
         assert self.is_on_grid(point)
         assert self._grid.get(point) is None
+
         adjacent_same_color = []
         adjacent_opposite_color = []
         liberties = []
@@ -69,9 +77,9 @@ class Board():
             elif neighbor_string.color == player:
                 if neighbor_string not in adjacent_same_color:
                     adjacent_same_color.append(neighbor_string)
-                else:
-                    if neighbor_string not in adjacent_opposite_color:
-                        adjacent_opposite_color.append(neighbor_string)
+            else:
+                if neighbor_string not in adjacent_opposite_color:
+                    adjacent_opposite_color.append(neighbor_string)
         new_string = GoString(player, [point], liberties)
         for same_color_string in adjacent_same_color:  # <1>
             new_string = new_string.merged_with(same_color_string)
@@ -82,6 +90,7 @@ class Board():
         for other_color_string in adjacent_opposite_color:  # <3>
             if other_color_string.num_liberties == 0:
                 self._remove_string(other_color_string)
+                #print("执行提子")
 
     #表示是在棋盘内
     def is_on_grid(self,point):
@@ -89,6 +98,7 @@ class Board():
             1<=point.col<=self.num_rows
 
     def get(self,point):
+        #如果棋链为空，表示没有子，否则返回子的颜色
         string=self._grid.get(point)
         if string is None:
             return None
@@ -106,7 +116,8 @@ class Board():
                    continue
                if neighbor_string is not string:
                    neighbor_string.add_liberty(point)
-           self._gridp[point]=None
+           self._grid[point]=None
+           #print("提子：",point)
 
 class GameState():
     def __init__(self, board, next_player, previous, move):
@@ -117,6 +128,9 @@ class GameState():
 
     def apply_move(self, move):
         if move.is_play:
+
+
+
             next_board = copy.deepcopy(self.board)
             next_board.place_stone(self.next_player, move.point)
         else:
@@ -171,6 +185,7 @@ class GameState():
             return False
         if move.is_pass or move.is_resign:
             return True
+        #验证这个位置上没有落子，没有自吃和重复下
         return (
                 self.board.get(move.point) is None and not self.is_move_self_capture(self.next_player, move) and \
             not self.does_move_violate_ko(self.next_player, move))
