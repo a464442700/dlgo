@@ -9,7 +9,7 @@ from dlgo.pygui_draw_new_2 import Draw
 from multiprocessing import Process, Queue
 from dlgo.agent import naive
 from dlgo.gotypes import Player, Point
-
+from dlgo.myutils import grade
 
 def main():
     board_size = 4
@@ -73,19 +73,26 @@ def main():
 
         game = game.apply_move(move)
         grid_queue.put(game.board._grid)
-        #print(game.board._grid)  # 打印棋子
-        #数目法求子
-        for key, value in game.board._grid.items():
+        #grid=game.board._grid
+        #grate=grade(grid)
+        #('winner: ',grate.winner)
+        #print(grate.grades)
 
-
-
-            # print('------start-----')
-            # print(key, value)
-            # print(value.color)
-            # print('value.liberties:',len(value.liberties))
-            # print('value.stones:',value.stones)
-            # print('-------end----')
-        # print('game.is_over():',game.is_over())
+        # print(game.board._grid)  # 打印棋子
+        # 数目法求子
+        # for key, value in game.board._grid.items():
+        #     # print('------start-----')
+        #     print(key, value)
+        #     if value is None:
+        #         continue
+        #     if value.color==Player.white:
+        #         continue
+        #
+        #     print(value.color)
+        #     print('value.liberties:', value.liberties)
+        #     print('value.stones:', value.stones)
+        # print('-------end----')
+    # print('game.is_over():',game.is_over())
 
 
 if __name__ == '__main__':

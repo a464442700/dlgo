@@ -6,6 +6,7 @@ from dlgo.gotypes import Player, Point
 import time
 from multiprocessing import Process, Queue
 from pygame.locals import QUIT
+from dlgo.myutils import grade
 import sys
 
 
@@ -194,7 +195,10 @@ class Draw(Process):
                     self.redraw_borad()
                     self.draw_all_points(grid)
                     pygame.display.update()
-
+                    grate = grade(grid)
+                    print(grate.grades)
+                    self.show_message(grate.message, self.message_pot)
+                    pygame.display.update()
 if __name__ == "__main__":
     bot_queue = Queue()
     human_queue = Queue()
