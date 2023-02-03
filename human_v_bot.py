@@ -1,3 +1,4 @@
+import multiprocessing
 import time
 
 from dlgo import agent
@@ -8,11 +9,12 @@ from dlgo.utils import print_board, print_move  # point_from_coords
 from dlgo.pygui_draw_new_2 import Draw
 from multiprocessing import Process, Queue
 from dlgo.agent import naive
+from multiprocessing import Process, Queue
 from dlgo.gotypes import Player, Point
 from dlgo.myutils import grade
 
 def main():
-    board_size = 4
+    board_size = 19 #19
     game = goboard.GameState.new_game(board_size)
     # bot = agent.RandomBot()
     bot = naive.RandomBot()
@@ -96,4 +98,6 @@ def main():
 
 
 if __name__ == '__main__':
+    #input('123')
+    multiprocessing.freeze_support()  # 解决无限循环的BUG
     main()

@@ -1,3 +1,5 @@
+import multiprocessing
+
 import pygame
 import math
 
@@ -7,6 +9,7 @@ import time
 from multiprocessing import Process, Queue
 from pygame.locals import QUIT
 import sys
+
 class Draw(Process):
 
     def __init__(self,af,board_size,bot_queue,human_queue,player_queue):
@@ -176,6 +179,7 @@ class Draw(Process):
             #print(1)
 
 if __name__ == "__main__":
+
     bot_queue = Queue()
     human_queue=Queue()
     player_queue=Queue()

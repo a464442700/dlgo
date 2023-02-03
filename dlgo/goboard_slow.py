@@ -1,66 +1,68 @@
-import copy #浅复制
-from dlgo.gotypes import  Player #从模块gotypes中导入类Player
+import copy  # 浅复制
+from dlgo.gotypes import Player  # 从模块gotypes中导入类Player
+
 
 class Move():
-    def __init__(self,point=None,is_pass=False,is_resign=False):#Move表示棋手的动作，落子，过，认输
-        assert (point is not None)^ is_pass^is_resign#assert 断言 assert False会报错
-        #^按位异或
-        self.point =point
-        self.is_play=(self.point is not None)
-        self.is_pass=is_pass
-        self.is_resign=is_resign
+    def __init__(self, point=None, is_pass=False, is_resign=False):  # Move表示棋手的动作，落子，过，认输
+        assert (point is not None) ^ is_pass ^ is_resign  # assert 断言 assert False会报错
+        # ^按位异或
+        self.point = point
+        self.is_play = (self.point is not None)
+        self.is_pass = is_pass
+        self.is_resign = is_resign
 
-    @classmethod#此注解可以不用实例化就能访问该方法
-    def play(cls,point):#cls表示类本身，self表示实例变量
+    @classmethod  # 此注解可以不用实例化就能访问该方法
+    def play(cls, point):  # cls表示类本身，self表示实例变量
         return Move(point=point)
+
     @classmethod
     def pass_turn(cls):
         return Move(is_pass=True)
+
     @classmethod
     def resign(cls):
         return Move(is_resign=True)
 
+
 class GoString():
     def __init__(self, color, stones, liberties):
-        self.color = color#当前棋链的颜色
-        self.stones = set(stones)#棋链的棋子坐标集合 set表示集合，有add remove等方法
-        self.liberties = set(liberties)#气也是坐标，棋链的气的坐标集合
+        self.color = color  # 当前棋链的颜色
+        self.stones = set(stones)  # 棋链的棋子坐标集合 set表示集合，有add remove等方法
+        self.liberties = set(liberties)  # 气也是坐标，棋链的气的坐标集合
 
     def remove_liberty(self, point):
-        self.liberties.remove(point)#移除一个气？
+        self.liberties.remove(point)  # 移除一个气？
 
     def add_liberty(self, point):
-        self.liberties.add(point)#增加一个气坐标？
+        self.liberties.add(point)  # 增加一个气坐标？
 
     def merged_with(self, go_string):  # <2>
-        assert go_string.color == self.color#assert表示断言，false直接raise例外
-        combined_stones = self.stones | go_string.stones#合并棋链，棋链中的棋子求并集
+        assert go_string.color == self.color  # assert表示断言，false直接raise例外
+        combined_stones = self.stones | go_string.stones  # 合并棋链，棋链中的棋子求并集
         return GoString(
             self.color,
             combined_stones,
-            (self.liberties | go_string.liberties) - combined_stones)#气求并集再求差集
+            (self.liberties | go_string.liberties) - combined_stones)  # 气求并集再求差集
 
     @property
     def num_liberties(self):
         return len(self.liberties)
 
     def __eq__(self, other):
-        return isinstance(other, GoString) and self.color == other.color and self.stones == other.stones and  self.liberties == other.liberties
+        return isinstance(other,
+                          GoString) and self.color == other.color and self.stones == other.stones and self.liberties == other.liberties
 
-#棋盘类
+
+# 棋盘类
 class Board():
-    def __init__(self,num_rows,num_cols):
-        self.num_rows=num_rows
-        self.num_cols=num_cols
-        self._grid={}#棋链字典
+    def __init__(self, num_rows, num_cols):
+        self.num_rows = num_rows
+        self.num_cols = num_cols
+        self._grid = {}  # 棋链字典
 
-    def place_stone(self,player,point):
+    def place_stone(self, player, point):
 
-        #add  by lxf 20220424
-
-
-
-
+        # add  by lxf 20220424
 
         assert self.is_on_grid(point)
         assert self._grid.get(point) is None
@@ -90,34 +92,37 @@ class Board():
         for other_color_string in adjacent_opposite_color:  # <3>
             if other_color_string.num_liberties == 0:
                 self._remove_string(other_color_string)
-                #print("执行提子")
+                # print("执行提子")
 
-    #表示是在棋盘内
-    def is_on_grid(self,point):
-        return 1<=point.row<=self.num_rows and \
-            1<=point.col<=self.num_rows
+    # 表示是在棋盘内
+    def is_on_grid(self, point):
+        return 1 <= point.row <= self.num_rows and \
+               1 <= point.col <= self.num_rows
 
-    def get(self,point):
-        #如果棋链为空，表示没有子，否则返回子的颜色
-        string=self._grid.get(point)
+    def get(self, point):
+        # 如果棋链为空，表示没有子，否则返回子的颜色
+        string = self._grid.get(point)
         if string is None:
             return None
         return string.color
-    def get_go_string(self,point):
-        string =self._grid.get(point)
+
+    def get_go_string(self, point):
+        string = self._grid.get(point)
         if string is None:
             return None
         return string
-    def _remove_string(self,string):
-       for point in string.stones:
-           for neighbor in point.neighbors():
-               neighbor_string = self._grid.get(neighbor)
-               if neighbor_string is None:
-                   continue
-               if neighbor_string is not string:
-                   neighbor_string.add_liberty(point)
-           self._grid[point]=None
-           #print("提子：",point)
+
+    def _remove_string(self, string):
+        for point in string.stones:
+            for neighbor in point.neighbors():
+                neighbor_string = self._grid.get(neighbor)
+                if neighbor_string is None:
+                    continue
+                if neighbor_string is not string:
+                    neighbor_string.add_liberty(point)
+            self._grid[point] = None
+            # print("提子：",point)
+
 
 class GameState():
     def __init__(self, board, next_player, previous, move):
@@ -128,8 +133,6 @@ class GameState():
 
     def apply_move(self, move):
         if move.is_play:
-
-
 
             next_board = copy.deepcopy(self.board)
             next_board.place_stone(self.next_player, move.point)
@@ -185,8 +188,7 @@ class GameState():
             return False
         if move.is_pass or move.is_resign:
             return True
-        #验证这个位置上没有落子，没有自吃和重复下
+        # 验证这个位置上没有落子，没有自吃和重复下
         return (
                 self.board.get(move.point) is None and not self.is_move_self_capture(self.next_player, move) and \
-            not self.does_move_violate_ko(self.next_player, move))
-
+                not self.does_move_violate_ko(self.next_player, move))

@@ -200,6 +200,7 @@ class Draw(Process):
                     self.show_message(grate.message, self.message_pot)
                     pygame.display.update()
 if __name__ == "__main__":
+
     bot_queue = Queue()
     human_queue = Queue()
     player_queue = Queue()
